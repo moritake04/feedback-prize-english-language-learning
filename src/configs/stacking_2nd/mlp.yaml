@@ -1,0 +1,59 @@
+general:
+  project_name: "feed-back-english-language-learning"
+  cv: false
+  seed: &seed 42
+  wandb_desabled: true
+
+model: mlp
+
+model_save: &model_save false
+
+pl_params:
+  max_epochs: &max_epochs 30
+  accelerator: auto
+  accumulate_grad_batches: 1
+  precision: 32 # 16 or 32
+  deterministic: false
+  benchmark: false
+  enable_checkpointing: *model_save
+  enable_model_summary: false
+  enable_progress_bar: true
+  #limit_train_batches: 0.1 # for debug
+  #limit_val_batches: 0.1 # for debug
+
+early_stopping: null
+#  patience: 10
+
+criterion: SmoothL1Loss
+optimizer:
+  name: Adam
+  params:
+    lr: 1.0e-2
+    #weight_decay: 1.0e-2
+scheduler:
+  name: OneCycleLR
+  params:
+    pct_start: 0.1
+    div_factor: 1.0e+3
+    max_lr: 1.0e-2
+    epochs: 30
+
+train_loader:
+  batch_size: 256
+  shuffle: true
+  num_workers: 2
+  pin_memory: true
+  drop_last: true
+valid_loader:
+  batch_size: 1024
+  shuffle: false
+  num_workers: 2
+  pin_memory: true
+  drop_last: false
+test_loader:
+  batch_size: 1024
+  shuffle: false
+  num_workers: 2
+  pin_memory: true
+  drop_last: false
+

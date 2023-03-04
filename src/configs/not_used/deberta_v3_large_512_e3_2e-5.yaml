@@ -1,0 +1,73 @@
+general:
+  project_name: "feed-back-english-language-learning"
+  seed: &seed 42
+  cv: true
+  wandb_desabled: false
+  fold: [0, 1, 2, 3, 4] # list (0-idx start) or null. set one element list, hold-out mode.
+  n_splits: 5
+  save_name: deberta_v3_large_512_e3_2e-5
+
+model: transformers
+model_name: microsoft/deberta-v3-large
+mlm: false
+pretrained: true
+header: mean_pooling
+retrieve_embeddings: false
+
+awp: null
+
+model_save: &model_save true
+
+tokenizer_params:
+  max_length: 512
+
+token_cut_head_and_tail: false
+preprocess: false
+
+transformers_params:
+  gradient_checkpointing: true
+  encoder_lr: 2.0e-5
+  decoder_lr: 2.0e-5
+  weight_decay: 0.01
+  lr_decay_final: 0.5 # 一番手前の層の学習率を何倍にするか
+  reinit_layers: null # 最後から数えて何層目までのlayerの初期値を初期化するか int or null
+  num_cycles: 0.5
+  warmup_ratio: 0.1
+  scheduler: cosine
+
+pl_params:
+  max_epochs: 3
+  accelerator: auto
+  accumulate_grad_batches: 1
+  precision: 16 # 16 or 32
+  deterministic: false
+  benchmark: false
+  enable_checkpointing: *model_save
+  enable_model_summary: false
+  enable_progress_bar: true
+  gradient_clip_val: 1.
+  #limit_train_batches: 0.1 # for debug
+  #limit_val_batches: 0.1 # for debug
+
+early_stopping: null
+
+criterion: SmoothL1Loss
+
+train_loader:
+  batch_size: 8
+  shuffle: true
+  num_workers: 2
+  pin_memory: true
+  drop_last: true
+valid_loader:
+  batch_size: 8
+  shuffle: false
+  num_workers: 2
+  pin_memory: true
+  drop_last: false
+test_loader:
+  batch_size: 8
+  shuffle: false
+  num_workers: 2
+  pin_memory: true
+  drop_last: false

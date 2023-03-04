@@ -1,0 +1,7 @@
+general:
+  save_name: rf
+
+model: rf
+
+randomforest_params:
+  n_estimators: 100

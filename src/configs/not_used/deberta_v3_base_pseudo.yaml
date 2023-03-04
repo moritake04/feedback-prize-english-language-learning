@@ -1,0 +1,66 @@
+general:
+  seed: &seed 42
+  cv: true
+  wandb_desabled: false
+  fold: [0, 1, 2, 3, 4] # list (0-idx start) or null. set one element list, hold-out mode.
+  n_splits: 5
+  save_name: submission_deberta_v3_base_pseudo
+
+model: transformers
+model_name: microsoft/deberta-v3-base
+pretrained: true
+header: mean_pooling
+
+model_save: &model_save true
+
+tokenizer_params:
+  max_length: 512
+
+token_cut_head_and_tail: false
+
+pseudo_labeling: true
+
+transformers_params:
+  gradient_checkpointing: true
+  encoder_lr: 1.0e-5
+  decoder_lr: 1.0e-4
+  weight_decay: 0.01
+  num_cycles: 0.5
+  num_warmup_steps: 100
+  scheduler: cosine
+
+pl_params:
+  max_epochs: 4
+  accelerator: auto
+  accumulate_grad_batches: 1
+  precision: 16 # 16 or 32
+  deterministic: false
+  benchmark: false
+  enable_checkpointing: *model_save
+  enable_model_summary: false
+  enable_progress_bar: true
+  # limit_train_batches: 0.01 # for debug
+  # limit_val_batches: 0.05 # for debug
+
+early_stopping: null
+
+criterion: SmoothL1Loss
+
+train_loader:
+  batch_size: 32
+  shuffle: true
+  num_workers: 2
+  pin_memory: true
+  drop_last: false
+valid_loader:
+  batch_size: 32
+  shuffle: false
+  num_workers: 2
+  pin_memory: true
+  drop_last: false
+test_loader:
+  batch_size: 32
+  shuffle: false
+  num_workers: 2
+  pin_memory: true
+  drop_last: false

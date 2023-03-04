@@ -1,0 +1,9 @@
+/data/input
+/data/output
+/weights
+/src/wandb
+/src/lightning_logs
+/src/bash.sh
+/src/colab.ipynb
+*.ipynb_checkpoints
+*__pycache__
